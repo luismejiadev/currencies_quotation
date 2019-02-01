@@ -1,0 +1,67 @@
+<%= form_with(model: quotation, local: true) do |form| %>
+  <% if quotation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(quotation.errors.count, "error") %> prohibited this quotation from being saved:</h2>
+
+      <ul>
+      <% quotation.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :currency_id %>
+    <%= form.text_field :currency_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :bid_value %>
+    <%= form.text_field :bid_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :ask_value %>
+    <%= form.text_field :ask_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :max_bid %>
+    <%= form.text_field :max_bid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :min_bid %>
+    <%= form.text_field :min_bid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :variation_bid %>
+    <%= form.text_field :variation_bid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :open_bid_value %>
+    <%= form.text_field :open_bid_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :date %>
+    <%= form.datetime_select :date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :created_at %>
+    <%= form.datetime_select :created_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :updated_at %>
+    <%= form.datetime_select :updated_at %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

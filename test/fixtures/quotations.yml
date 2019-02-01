@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  currency: one
+  bid_value: 9.99
+  ask_value: 9.99
+  max_bid: 9.99
+  min_bid: 9.99
+  variation_bid: 
+  open_bid_value: 9.99
+  date: 2019-01-31 20:08:29
+  created_at: 2019-01-31 20:08:29
+  updated_at: 2019-01-31 20:08:29
+
+two:
+  currency: two
+  bid_value: 9.99
+  ask_value: 9.99
+  max_bid: 9.99
+  min_bid: 9.99
+  variation_bid: 
+  open_bid_value: 9.99
+  date: 2019-01-31 20:08:29
+  created_at: 2019-01-31 20:08:29
+  updated_at: 2019-01-31 20:08:29

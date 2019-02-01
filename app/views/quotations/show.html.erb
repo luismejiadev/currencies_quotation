@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Currency:</strong>
+  <%= @quotation.currency %>
+</p>
+
+<p>
+  <strong>Bid value:</strong>
+  <%= @quotation.bid_value %>
+</p>
+
+<p>
+  <strong>Ask value:</strong>
+  <%= @quotation.ask_value %>
+</p>
+
+<p>
+  <strong>Max bid:</strong>
+  <%= @quotation.max_bid %>
+</p>
+
+<p>
+  <strong>Min bid:</strong>
+  <%= @quotation.min_bid %>
+</p>
+
+<p>
+  <strong>Variation bid:</strong>
+  <%= @quotation.variation_bid %>
+</p>
+
+<p>
+  <strong>Open bid value:</strong>
+  <%= @quotation.open_bid_value %>
+</p>
+
+<p>
+  <strong>Date:</strong>
+  <%= @quotation.date %>
+</p>
+
+<p>
+  <strong>Created at:</strong>
+  <%= @quotation.created_at %>
+</p>
+
+<p>
+  <strong>Updated at:</strong>
+  <%= @quotation.updated_at %>
+</p>
+
+<%= link_to 'Edit', edit_quotation_path(@quotation) %> |
+<%= link_to 'Back', quotations_path %>
