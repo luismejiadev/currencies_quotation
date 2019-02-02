@@ -1,15 +1,40 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>CurrenciesQuotation</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+  <title>CurrenciesQuotation</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-  <body>
-    <%= yield %>
-  </body>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+</head>
+
+<body class="template-application">
+<div id="st-container" class="st-container">
+
+  <div class="st-pusher" %>>
+    <div class="st-content">
+      <div class="st-content-inner">
+        <div class="main">
+          <div class="position-relative">
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer text-center">
+      <p>Made by Luis Mejia</p>
+    </footer>
+    <!-- /Footer -->
+
+  </div>
+</div>
+</body>
 </html>
