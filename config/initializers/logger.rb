@@ -1,1 +1,1 @@
-Rails.logger = Logger.new(STDOUT)
+# Rails.logger = Logger.new(STDOUT)
