@@ -5,23 +5,30 @@ class QuotationsController < ApplicationController
   # GET /quotations.json
   def index
     puts params
-    currency = params[:currency]
-    inverval = params[:inverval] || 'day'
+    currency = params["currrency"]
+    interval = params["interval"] || 'day'
 
-    @quotations = Quotation.all.order("currency_id asc, date desc")
-    if params[:currency].present?
-      currency = Currency.find_by(code: params[:currency])
-      @quotations = @quotations.where(currency: currency, interval: inverval)
+    @quotations = Quotation.all.order("currency_id asc, date asc")
+    puts "currency #{currency}"
+    puts currency.present?
+    if currency.present?
+      currency = Currency.find_by(code: currency)
+      start_day = Date.today - Quotation.get_date_interval(interval)
+      puts start_day
+      @quotations = @quotations.where(
+        currency: currency,
+        interval: interval
+      ).where("date >= ?", start_day)
+      .order("date asc")
     end
-    puts request.format
-    if request.format != 'json'
+    if request.format != 'application/json'
       page_limit = params.fetch(:limit, 20)
       @quotations = @quotations.paginate(page: params[:page], per_page: page_limit)
     end
     respond_to do |format|
       format.html
       format.json do
-        render json: Quotation.json_serialize(@quotations)
+        render json: Quotation.json_serialize(@quotations, interval)
       end
     end
   end

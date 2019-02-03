@@ -9,20 +9,20 @@
   <h1 class="h2">Dashboard</h1>
   <div class="btn-toolbar mb-2 mb-md-0">
     <div class="btn-group mr-2">
-      <button type="button" class="btn btn-sm btn-outline-secondary active">
+      <button type="button" class="btn btn-sm btn-outline-secondary time" onclick="updateData(this, 'day')" id="day">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               1D
       </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary">
+      <button type="button" class="btn btn-sm btn-outline-secondary time" onclick="updateData(this, 'week')" id="week">
               1W
       </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary">
+      <button type="button" class="btn btn-sm btn-outline-secondary time " onclick="updateData(this, 'month')"  id="month">
               1M
       </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary">
+      <button type="button" class="btn btn-sm btn-outline-secondary time" onclick="updateData(this, 'months')" id="months">
               3M
       </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary">
+      <button type="button" class="btn btn-sm btn-outline-secondary time active" onclick="updateData(this, 'year')" id="year">
               1Y
       </button>
     </div>
@@ -34,10 +34,10 @@
   <div class="col-12">
     <div class="btn-toolbar mb-2 mb-md-0 currencies">
       <div class="btn-group mr-2">
-        <% @currencies.each_with_index do |currency, index| %>
+        <% @currencies.each do |currency| %>
           <button
                   type="button"
-                  onclick="toggleDataset(this, '<%= currency.code %>', <%= index %>)"
+                  onclick="toggleDataset(this, '<%= currency.code %>')"
                   class="btn btn-sm btn-outline-secondary <%= (currency.code == @current_currency.code )? 'active': ''%>">
             <%= currency.code %>
           </button>
@@ -46,17 +46,7 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-12">
-    <br>
-    <br>
-    <button id="randomizeData">Randomize Data</button>
-    <button id="addDataset">Add Dataset</button>
-    <button id="removeDataset">Remove Dataset</button>
-    <button id="addData">Add Data</button>
-    <button id="removeData">Remove Data</button>
-  </div>
-</div>
+
 <div class="row">
   <div class="col-12">
     <h2>Detail</h2>
@@ -101,7 +91,10 @@
       // grey:
       'rgb(201, 203, 207)'
     ]
-
+    var currencyColors =  {}
+    <% @currencies.each_with_index do |currency, index| %>
+      currencyColors['<%= currency.code %>'] = <%= index %>
+    <% end %>
     var config = {
       type: 'line',
       data: {
@@ -109,14 +102,19 @@
         datasets: []
       },
       options: {
+        elements: {
+          point:{
+              radius: 0
+          }
+        },
         responsive: true,
         title: {
           display: true,
           text: 'Currencies Quotation'
         },
         tooltips: {
-          mode: 'index',
-          intersect: true,
+          mode: 'x-axis',
+          intersect: false,
         },
         hover: {
           mode: 'nearest',
@@ -127,9 +125,14 @@
           position: 'bottom'
         },
         scales: {
+            xAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 3
+                }
+            }],
            yAxes: [{
-                    display: true,
-                    stacked: true
+              beginAtZero: false
            }]
         }
       }
@@ -139,22 +142,22 @@
       var ctx = document.getElementById('myChart').getContext('2d');
       window.myLine = new Chart(ctx, config);
       console.log("onload")
-      loadData('<%= @current_currency.code %>', 0);
+      loadData('<%= @current_currency.code %>', 'year');
     };
 
-    function toggleDataset(element, currency, colorIndex){
+    function toggleDataset(element, currency){
       console.log(currency);
-      console.log(colorIndex);
       if (element !== undefined && element.classList.contains('active')) {
         element.classList.remove("active");
         removeDataset(currency);
       } else {
         element.classList.add("active");
-        loadData(currency, colorIndex);
+        loadData(currency);
       }
     }
 
-    function addDataset(data, labels, currency, colorIndex) {
+    function addDataset(data, labels, currency, maxLabels) {
+        var colorIndex = currencyColors[currency];
         var newColor = colorNames[colorIndex];
         console.log(newColor);
         var newDataset = {
@@ -168,15 +171,33 @@
         };
         config.data.datasets.push(newDataset);
         config.data.labels = labels
+        config.options.scales.xAxes = [{
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: maxLabels
+          }
+        }]
         window.myLine.update();
     }
 
-    function loadData(currency, colorIndex){
-      // var xhr = new XMLHttpRequest();
+    function updateData(element, interval){
+      document.getElementsByClassName("time active")[0].classList.remove("active");
+      element.classList.add("active");
+      var datasets = [...config.data.datasets];
+      config.data.datasets = [];
+      window.myLine.update();
+      for (var i = 0; i < datasets.length; i++) {
+        console.log(datasets[i].label);
+        loadData(datasets[i].label, interval)
+      }
+    }
+
+    function loadData(currency, interval){
+      interval = interval || document.getElementsByClassName("time active")[0].id;
       var xhr = typeof XMLHttpRequest != 'undefined'
         ? new XMLHttpRequest()
         : new ActiveXObject('Microsoft.XMLHTTP');
-      xhr.open('GET', '/quotations.json?currrency=' + currency);
+      xhr.open('GET', '/quotations.json?currrency=' + currency + '&interval=' + interval);
       xhr.onload = function() {
           if (xhr.status === 200) {
               currencyInfo = JSON.parse(xhr.responseText);
@@ -184,15 +205,11 @@
               var obj;
               var data = []
               var labels = []
-              for (var i = 0; i < currencyInfo.length; i++) {
-                obj = currencyInfo[i]
-                console.log(obj)
+              for (var i = 0; i < currencyInfo.data.length; i++) {
+                obj = currencyInfo.data[i]
                 data.push(parseFloat(obj.ask_value));
-                // if (!labels.includes(obj.date)){
-                  labels.push(obj.date)
-                // }
               }
-              addDataset(data, labels, currency, colorIndex)
+              addDataset(data, currencyInfo.labels, currency, currencyInfo.maxLabels)
           }
           else {
               alert('Request failed.  Returned status of ' + xhr.status);
