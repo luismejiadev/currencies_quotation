@@ -7,6 +7,8 @@ class QuotationsController < ApplicationController
     puts params
     currency = params["currrency"]
     interval = params["interval"] || 'day'
+    interval = interval.downcase
+    interval = 'day' if not Quotation::INTERVALS.keys.include? interval.to_sym
 
     @quotations = Quotation.all.order("currency_id asc, date asc")
     puts "currency #{currency}"

@@ -69,6 +69,16 @@ RSpec.describe QuotationsController, type: :controller do
       }.to_json)
     end
 
+    it "responds with JSON interval: RAMDOM" do
+      quotations = Quotation.all
+      get :index, :params => {interval: 'AFLASJFAS;L'}, :format => :json
+      expect(response.body).to eq({
+        data: [],
+        labels: [],
+        maxLabels: 6
+      }.to_json)
+    end
+
   end
 
 end
