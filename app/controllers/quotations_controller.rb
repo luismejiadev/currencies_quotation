@@ -4,9 +4,26 @@ class QuotationsController < ApplicationController
   # GET /quotations
   # GET /quotations.json
   def index
-    @quotations = Quotation.all.order(id: :desc)
-    page_limit = params.fetch(:limit, 20)
-    @quotations = @quotations.paginate(page: params[:page], per_page: page_limit)
+    puts params
+    currency = params[:currency]
+    inverval = params[:inverval] || 'day'
+
+    @quotations = Quotation.all.order("currency_id asc, date desc")
+    if params[:currency].present?
+      currency = Currency.find_by(code: params[:currency])
+      @quotations = @quotations.where(currency: currency, interval: inverval)
+    end
+    puts request.format
+    if request.format != 'json'
+      page_limit = params.fetch(:limit, 20)
+      @quotations = @quotations.paginate(page: params[:page], per_page: page_limit)
+    end
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: Quotation.json_serialize(@quotations)
+      end
+    end
   end
 
   # GET /quotations/1
