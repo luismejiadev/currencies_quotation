@@ -1,4 +1,6 @@
 class HomeController < ApplicationController
-  def home
+  def index
+    @currencies = Currency.all
+    @current_currency = @currencies.first
   end
 end
