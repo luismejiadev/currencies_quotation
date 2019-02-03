@@ -1,1 +1,215 @@
-index.html.erb
+<style>
+  .currencies div{
+    margin: 0 auto !important;
+    text-align: center;
+
+  }
+</style>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Dashboard</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group mr-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary active">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              1D
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary">
+              1W
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary">
+              1M
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary">
+              3M
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary">
+              1Y
+      </button>
+    </div>
+  </div>
+</div>
+
+<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+<div class="row">
+  <div class="col-12">
+    <div class="btn-toolbar mb-2 mb-md-0 currencies">
+      <div class="btn-group mr-2">
+        <% @currencies.each_with_index do |currency, index| %>
+          <button
+                  type="button"
+                  onclick="toggleDataset(this, '<%= currency.code %>', <%= index %>)"
+                  class="btn btn-sm btn-outline-secondary <%= (currency.code == @current_currency.code )? 'active': ''%>">
+            <%= currency.code %>
+          </button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <br>
+    <br>
+    <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <h2>Detail</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-sm" id="detail">
+        <thead>
+          <tr>
+            <th>DATE</th>
+            <th>BID</th>
+            <th>ASK</th>
+            <th colspan="2">VARIATION</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+  <script>
+    window.randomScalingFactor = function() {
+      return 100
+    };
+    var colorNames = [
+      // red:
+      'rgb(255, 99, 132)',
+      // orange:
+      'rgb(255, 159, 64)',
+      // yellow:
+      'rgb(255, 205, 86)',
+      // green:
+      'rgb(75, 192, 192)',
+      // blue:
+      'rgb(54, 162, 235)',
+      // purple:
+      'rgb(153, 102, 255)',
+      // grey:
+      'rgb(201, 203, 207)'
+    ]
+
+    var config = {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: []
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: 'Currencies Quotation'
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: true,
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: true
+        },
+        legend: {
+          display: true,
+          position: 'bottom'
+        },
+        scales: {
+           yAxes: [{
+                    display: true,
+                    stacked: true
+           }]
+        }
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('myChart').getContext('2d');
+      window.myLine = new Chart(ctx, config);
+      console.log("onload")
+      loadData('<%= @current_currency.code %>', 0);
+    };
+
+    function toggleDataset(element, currency, colorIndex){
+      console.log(currency);
+      console.log(colorIndex);
+      if (element !== undefined && element.classList.contains('active')) {
+        element.classList.remove("active");
+        removeDataset(currency);
+      } else {
+        element.classList.add("active");
+        loadData(currency, colorIndex);
+      }
+    }
+
+    function addDataset(data, labels, currency, colorIndex) {
+        var newColor = colorNames[colorIndex];
+        console.log(newColor);
+        var newDataset = {
+          label: currency,
+          backgroundColor: newColor,
+          borderColor: newColor,
+          borderWidth: 4,
+          lineTension: 0,
+          data: data,
+          fill: false
+        };
+        config.data.datasets.push(newDataset);
+        config.data.labels = labels
+        window.myLine.update();
+    }
+
+    function loadData(currency, colorIndex){
+      // var xhr = new XMLHttpRequest();
+      var xhr = typeof XMLHttpRequest != 'undefined'
+        ? new XMLHttpRequest()
+        : new ActiveXObject('Microsoft.XMLHTTP');
+      xhr.open('GET', '/quotations.json?currrency=' + currency);
+      xhr.onload = function() {
+          if (xhr.status === 200) {
+              currencyInfo = JSON.parse(xhr.responseText);
+              console.log(currencyInfo);
+              var obj;
+              var data = []
+              var labels = []
+              for (var i = 0; i < currencyInfo.length; i++) {
+                obj = currencyInfo[i]
+                console.log(obj)
+                data.push(parseFloat(obj.ask_value));
+                // if (!labels.includes(obj.date)){
+                  labels.push(obj.date)
+                // }
+              }
+              addDataset(data, labels, currency, colorIndex)
+          }
+          else {
+              alert('Request failed.  Returned status of ' + xhr.status);
+          }
+      };
+      xhr.send();
+    }
+
+    function removeDataset(currency) {
+      console.log(config.data.datasets);
+      for (var i = 0; i < config.data.datasets.length; i++) {
+        var obj = config.data.datasets[i];
+        if (obj.label === currency){
+          config.data.datasets.splice(i, 1);
+        }
+      }
+      window.myLine.update();
+    }
+
+</script>
