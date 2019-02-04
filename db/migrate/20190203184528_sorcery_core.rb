@@ -1,9 +1,6 @@
 class SorceryCore < ActiveRecord::Migration[5.2]
   def change
     create_table :users do |t|
-      t.string :username
-      t.boolean :is_active, default: true
-      t.boolean :is_admin, default: false
       t.string :email,            :null => false
       t.string :crypted_password
       t.string :salt
