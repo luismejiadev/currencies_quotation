@@ -1,0 +1,31 @@
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+  <div class="sidebar-sticky">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <%= link_to main_app.root_path , class: "nav-link active", data: { turbolinks: false } do %>
+          <span data-feather="home"></span>
+          Dashboard <span class="sr-only">(current)</span>
+        <% end %>
+      </li>
+
+      <li class="nav-item">
+        <%= link_to main_app.users_path , class: "nav-link active" do %>
+          <span data-feather="file"></span>
+          Users
+        <% end %>
+      </li>
+
+      <li class="nav-item">
+        <%= link_to main_app.currencies_path , class: "nav-link active" do %>
+          <span data-feather="file"></span>
+          Currencies
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to main_app.quotations_path , class: "nav-link active" do %>
+          <span data-feather="shopping-cart"></span>
+          Quotations
+        <% end %>
+      </li>
+    </div>
+</nav>

@@ -49,18 +49,32 @@
 
 <div class="row">
   <div class="col-12">
-    <h2>Detail</h2>
+    <h2>Detail <%= @current_currency.code %></h2>
     <div class="table-responsive">
       <table class="table table-striped table-sm" id="detail">
         <thead>
           <tr>
-            <th>DATE</th>
-            <th>BID</th>
-            <th>ASK</th>
+            <th>Date</th>
+            <th>Bid</th>
+            <th>Ask</th>
             <th colspan="2">VARIATION</th>
+            <th>Min</th>
+            <th>Max</th>
           </tr>
         </thead>
         <tbody>
+          <% @quotations.each do | row |%>
+            <tr>
+              <td><%= row.date %></td>
+              <td><%= row.bid_value %></td>
+              <td><%= row.ask_value %></td>
+              <td><%= row.variation_percent_bid %></td>
+              <td><%= row.variation_bid %></td>
+              <td><%= row.min_bid %></td>
+              <td><%= row.max_bid %></td>
+            </tr>
+          <% end %>
+
         </tbody>
       </table>
     </div>

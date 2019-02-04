@@ -1,0 +1,24 @@
+// Place all the styles related to the users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.form-group label {
+    margin-bottom: 5px !important;
+}
+
+.form-group input{
+    padding: .15rem .75rem !important;
+    line-height: 1.5 !important;
+    height: 42px !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    font-size: .9rem !important;
+}
+
+.navbar-nav {
+  display: inline-block !important;
+}
+.navbar-nav .nav-item{
+  display: inline-block;
+  margin-right: 20px;
+}

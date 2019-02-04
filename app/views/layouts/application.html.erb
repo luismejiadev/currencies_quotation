@@ -37,43 +37,16 @@
     <link href="https://getbootstrap.com/docs/4.2/examples/dashboard/dashboard.css" rel="stylesheet">
   </head>
   <body>
-    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">Company name</a>
-  <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">Sign out</a>
-    </li>
-  </ul>
-</nav>
-
+    <%= render 'partials/navbar' %>
 <div class="container-fluid">
   <div class="row">
-    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <%= link_to main_app.root_path , class: "nav-link active", data: { turbolinks: false } do %>
-              <span data-feather="home"></span>
-              Dashboard <span class="sr-only">(current)</span>
-            <% end %>
-          </li>
-          <li class="nav-item">
-            <%= link_to main_app.currencies_path , class: "nav-link active" do %>
-              <span data-feather="file"></span>
-              Currencies
-            <% end %>
-          </li>
-          <li class="nav-item">
-            <%= link_to main_app.quotations_path , class: "nav-link active" do %>
-              <span data-feather="shopping-cart"></span>
-              Quotations
-            <% end %>
-          </li>
-      </div>
-    </nav>
-
+    <%= render 'partials/sidebar' %>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-      <%= yield %>
+      <div class="row">
+        <div class="col-12">
+          <%= yield %>
+        </div>
+      </div>
     </main>
   </div>
 </div>
