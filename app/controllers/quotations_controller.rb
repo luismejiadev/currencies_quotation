@@ -1,5 +1,10 @@
 class QuotationsController < ApplicationController
+  skip_before_action :require_login, :if => :format_json?
   before_action :set_quotation, only: [:show, :edit, :update, :destroy]
+
+  def format_json?
+    request.format.json?
+  end
 
   # GET /quotations
   # GET /quotations.json
